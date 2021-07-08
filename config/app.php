@@ -175,6 +175,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\Neo4jServiceProvider::class,
+        App\Providers\RepositoryServiceProvider::class,
     ],
 
     /*

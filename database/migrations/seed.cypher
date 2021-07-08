@@ -1,0 +1,4 @@
+CREATE CONSTRAINT user_id_unique IF NOT EXISTS ON (u:User) ASSERT u.id IS UNIQUE;
+CREATE CONSTRAINT user_email_unique IF NOT EXISTS ON (u:User) ASSERT u.email IS UNIQUE;
+
+
