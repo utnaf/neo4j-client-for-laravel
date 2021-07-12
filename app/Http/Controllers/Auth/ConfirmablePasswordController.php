@@ -7,7 +7,6 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
-use Inertia\Inertia;
 
 class ConfirmablePasswordController extends Controller
 {
@@ -18,7 +17,7 @@ class ConfirmablePasswordController extends Controller
      */
     public function show()
     {
-        return Inertia::render('Auth/ConfirmPassword');
+        return view('auth.confirm-password');
     }
 
     /**

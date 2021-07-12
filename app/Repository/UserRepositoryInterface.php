@@ -7,7 +7,7 @@ use App\Models\User;
 
 interface UserRepositoryInterface
 {
-    public function save(User $user): void;
+    public function save(User $user): User;
 
     /**
      * @throws UserNotFoundException

@@ -11,8 +11,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
-use Inertia\Inertia;
-use Laudis\Neo4j\Contracts\ClientInterface;
 
 class RegisteredUserController extends Controller
 {
@@ -35,7 +33,7 @@ class RegisteredUserController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Auth/Register');
+        return view('auth.register');
     }
 
     /**
@@ -58,11 +56,11 @@ class RegisteredUserController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
-        $this->userRepository->save($user);
+        $savedUser = $this->userRepository->save($user);
 
-        event(new Registered($user));
+        event(new Registered($savedUser));
 
-        Auth::login($user);
+        Auth::login($savedUser);
 
         return redirect(RouteServiceProvider::HOME);
     }

@@ -5,7 +5,9 @@ namespace App\Repository;
 use App\Exceptions\UserNotFoundException;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Validation\ValidationException;
 use Laudis\Neo4j\Contracts\TransactionInterface;
+use Laudis\Neo4j\Exception\Neo4jException;
 use Laudis\Neo4j\Types\CypherMap;
 use Ramsey\Uuid\Uuid;
 
@@ -22,7 +24,11 @@ u.created_at AS created_at,
 u.updated_at AS updated_at
 CYPHER;
 
-    public function save(User $user): void
+    /**
+     * @throws ValidationException
+     * @throws UserNotFoundException
+     */
+    public function save(User $user): User
     {
         $params = [
             'id' => $user->id ?? Uuid::uuid4(),
@@ -35,18 +41,24 @@ CYPHER;
             'updated_at' => Carbon::now(),
         ];
 
-        $this->client->writeTransaction(static function (TransactionInterface $tsx) use ($params) {
-            $query = 'MERGE (u:User {id: $id}) '
-                . 'SET u.name = $name, '
-                . 'u.email = $email, '
-                . 'u.password = $password, '
-                . 'u.remember_token = $remember_token, '
-                . 'u.email_verified_at = $email_verified_at, '
-                . 'u.created_at = $created_at, '
-                . 'u.updated_at = $updated_at';
+        $query = 'MERGE (u:User {id: $id}) '
+            . 'SET u.name = $name, '
+            . 'u.email = $email, '
+            . 'u.password = $password, '
+            . 'u.remember_token = $remember_token, '
+            . 'u.email_verified_at = $email_verified_at, '
+            . 'u.created_at = $created_at, '
+            . 'u.updated_at = $updated_at';
 
-            $tsx->run($query, $params);
-        });
+        try {
+            $this->client->run($query, $params);
+        } catch (Neo4jException $e) {
+            throw ValidationException::withMessages([
+                $e->getMessage()
+            ]);
+        }
+
+        return $this->getById($params['id']);
     }
 
     /**
