@@ -5,7 +5,6 @@ namespace App\Repository;
 use App\Exceptions\UserNotFoundException;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
 use Laudis\Neo4j\Contracts\TransactionInterface;
 use Laudis\Neo4j\Types\CypherMap;
 use Ramsey\Uuid\Uuid;
