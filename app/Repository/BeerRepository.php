@@ -14,8 +14,9 @@ class BeerRepository extends AbstractRepository implements BeerRepositoryInterfa
         $query = <<<CYPHER
 MATCH (b:Beer)-[:STYLE]->(s:Style)
 MATCH (b)-[:BREWED_BY]->(br:Brewery)
-RETURN b.id AS id, b.name AS name, s.name AS style, br.name AS brewery
-ORDER BY name ASC, brewery ASC
+MATCH (r)-[:ABOUT]->(b)
+RETURN b.id AS id, b.name AS name, s.name AS style, br.name AS brewery, count(r) AS review_count
+ORDER BY id ASC
 SKIP \$skip LIMIT \$limit
 CYPHER;
         $result = $this->client->run($query, [
@@ -45,6 +46,7 @@ CYPHER;
         $beer->name = $beerNode->get("name");
         $beer->style = $beerNode->get("style");
         $beer->brewery = $beerNode->get("brewery");
+        $beer->review_count = $beerNode->get("review_count");
 
         return $beer;
     }

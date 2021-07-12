@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Repository\BeerRepositoryInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Pagination\CursorPaginator;
+use Illuminate\View\View;
 
 class BeerController extends Controller
 {
@@ -25,22 +27,24 @@ class BeerController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return JsonResponse
+     * @return View
      */
     public function index(Request $request)
     {
-        return new JsonResponse(
-            $this->beerRepository->getAll(
-                self::PER_PAGE * $request->get('page', 0),
-                self::PER_PAGE
-            )
+        $beers = $this->beerRepository->getAll(
+            self::PER_PAGE * $request->get('page', 0),
+            self::PER_PAGE
         );
+
+        return view("beer.index", [
+            'beers' => $beers
+        ]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -51,7 +55,7 @@ class BeerController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -62,8 +66,8 @@ class BeerController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -74,7 +78,7 @@ class BeerController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
