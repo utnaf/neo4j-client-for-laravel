@@ -3,15 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Repository\BeerRepositoryInterface;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Pagination\CursorPaginator;
 use Illuminate\View\View;
 
 class BeerController extends Controller
 {
-    public const PER_PAGE = 20;
+    public const PER_PAGE = 9;
 
     private BeerRepositoryInterface $beerRepository;
 
