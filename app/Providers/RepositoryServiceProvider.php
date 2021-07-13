@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Repository\BeerRepository;
 use App\Repository\BeerRepositoryInterface;
+use App\Repository\ReviewRepository;
+use App\Repository\ReviewRepositoryInterface;
 use App\Repository\UserRepository;
 use App\Repository\UserRepositoryInterface;
 use Illuminate\Support\ServiceProvider;

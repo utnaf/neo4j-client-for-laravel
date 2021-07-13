@@ -19,11 +19,11 @@ MERGE (u:User {
     password: "$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi"
 })
 CREATE (r:Review {
-    palate: map.review_palate,
-    appearance: map.review_appearance,
-    aroma: map.review_aroma,
-    overall: map.review_overall,
-    taste: map.review_taste,
+    palate: toFloatOrNull(map.review_palate),
+    appearance: toFloatOrNull(map.review_appearance),
+    aroma: toFloatOrNull(map.review_aroma),
+    overall: toFloatOrNull(map.review_overall),
+    taste: toFloatOrNull(map.review_taste),
     created_at: map.review_time
 })
 MERGE (u)-[:WROTE]->(r)
