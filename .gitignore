@@ -13,4 +13,4 @@ npm-debug.log
 yarn-error.log
 /.idea
 /.vscode
-database/migrations/beer_reviews.csv
+database/migrations/new_beer_db.cypher

@@ -16,18 +16,20 @@ class BeerRepository extends AbstractRepository implements BeerRepositoryInterfa
         $query = <<<CYPHER
 MATCH (b:Beer)-[:STYLE]->(s:Style)
 MATCH (b)-[:BREWED_BY]->(br:Brewery)
-MATCH (r)-[:ABOUT]->(b)
+MATCH (br)-[:FROM]->(c:City)
+MATCH (c)-[:IN]->(st:State)
+MATCH (r:Review)-[:ABOUT]->(b)
 RETURN
     b.id AS id,
     b.name AS name,
+    b.abv AS abv,
+    b.ibu AS ibu,
     s.name AS style,
     br.name AS brewery,
+    c.name AS city,
+    TRIM(st.name) AS state,
     count(r) AS review_count,
-    avg(r.overall) AS overall_score_avg,
-    avg(r.appearance) AS appearance_score_avg,
-    avg(r.aroma) AS aroma_score_avg,
-    avg(r.palate) AS palate_score_avg,
-    avg(r.taste) AS taste_score_avg
+    avg(r.rating) AS overall_rating
 ORDER BY id ASC
 SKIP \$skip LIMIT \$limit
 CYPHER;
@@ -57,16 +59,13 @@ CYPHER;
         $beer->id = $beerNode->get("id");
         $beer->name = $beerNode->get("name");
         $beer->style = $beerNode->get("style");
+        $beer->ibu = $beerNode->get("ibu");
+        $beer->abv = $beerNode->get("abv");
         $beer->brewery = $beerNode->get("brewery");
+        $beer->brewery_city = $beerNode->get("city");
+        $beer->brewery_state = $beerNode->get("state");
         $beer->review_count = $beerNode->get("review_count");
-        $stats = new BeerStats;
-
-        $stats->overall = round($beerNode->get("overall_score_avg"), 2);
-        $stats->taste = round($beerNode->get("taste_score_avg"), 2);
-        $stats->palate = round($beerNode->get("palate_score_avg"), 2);
-        $stats->aroma = round($beerNode->get("aroma_score_avg"), 2);
-        $stats->appearance = round($beerNode->get("appearance_score_avg"), 2);
-        $beer->stats = $stats;
+        $beer->rating = $beerNode->get("overall_rating");
 
         return $beer;
     }

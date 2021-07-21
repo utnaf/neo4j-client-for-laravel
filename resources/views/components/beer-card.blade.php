@@ -14,16 +14,17 @@
         <div class="flex mb-4">
             <div class="sm">
                 <h4 class="text-l font-bold text-blue-600">{{ $beer->name }}</h4>
-                <h5 class="text-sm"><strong>{{ $beer->style }}</strong> brewed by <strong>{{ $beer->brewery }}</strong></h5>
+                <h5 class="text-sm">Brewed by <strong>{{ $beer->brewery }}</strong></h5>
+                <h6 class="text-sm">{{ $beer->brewery_city }} ({{ $beer->brewery_state }})</h6>
             </div>
         </div>
         <div>
-            <h3 class="font-bold mb-0.5">Ratings</h3>
-            <x-score score="{{ $beer->stats->overall }}">Overall</x-score>
-            <x-score score="{{ $beer->stats->taste }}">Taste</x-score>
-            <x-score score="{{ $beer->stats->appearance }}">Appearance</x-score>
-            <x-score score="{{ $beer->stats->palate }}">Palate</x-score>
-            <x-score score="{{ $beer->stats->aroma }}">Aroma</x-score>
+            <ul class="text-sm">
+                <li><strong>Style</strong>: {{ $beer->style }}</li>
+                <li><strong>Alcohol</strong>: {{ round($beer->abv * 100, 1) }}%</li>
+                <li><strong>IBU</strong>: {{ $beer->ibu }}</li>
+                <li><strong>Rating</strong>: {{ $beer->rating }}</li>
+            </ul>
         </div>
     </div>
 </div>
