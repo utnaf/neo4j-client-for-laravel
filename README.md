@@ -1,50 +1,34 @@
-## Notes
+# Hops
 
-https://www.kaggle.com/rdoume/beerreviews
+### Requirements
 
-```
-CREATE (r:Review {
-    appearance: 3,
-    taste: 4,
-    aroma: 5,
-    palate: 4,
-    overall: 4
-})
-WITH r
-MATCH (u:User {email: "fantuzzidavide@gmail.com"})
-WITH u, r
-CREATE (u)-[:WROTE]->(r)
-WITH u, r
-MATCH (b:Beer { name: "Allagash Dubbel Ale"})
-WITH r, b
-CREATE (r)-[:ABOUT]->(b)
-```
+* PHP 8+
+* composer
+* Docker
+* NodeJS
+
+### How to use
+
+Before running the app for the first time you need to run a couple of commands:
 
 ```
-MATCH (u:User {email: "fantuzzidavide@gmail.com"})
-RETURN u
+composer install
+npm install
 ```
 
+Start Neo4j
 ```
-MATCH (u:User)-[:WROTE]-(r:Review)-[:ABOUT]->(b:Beer)
-WHERE
-    round(r.appearance, 0) = 3 AND
-    round(r.taste, 0) = 4 AND
-    round(r.overall, 0) = 4 AND
-    round(r.palate, 0) = 4 AND
-    round(r.aroma, 0) = 5
-RETURN COUNT(DISTINCT b)
+docker-compose up
 ```
 
+Start the app
+
 ```
-CALL gds.graph.create(
-    'reviewSimilarityGraph',
-    {
-        Review: {
-            label: 'Review',
-            properties: ['appearance', 'aroma', 'palate', 'taste']
-        }
-    },
-    '*'
-);
+php artisan serve
+```
+
+Seed the Database
+
+```
+make neo4j-seed
 ```
