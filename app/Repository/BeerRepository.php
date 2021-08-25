@@ -4,8 +4,7 @@ namespace App\Repository;
 
 use App\Collection\BeerCollection;
 use App\Models\Beer;
-use App\Models\BeerStats;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Brewery;
 use Laudis\Neo4j\Types\CypherMap;
 
 class BeerRepository extends AbstractRepository implements BeerRepositoryInterface
@@ -18,7 +17,7 @@ MATCH (b:Beer)-[:STYLE]->(s:Style)
 MATCH (b)-[:BREWED_BY]->(br:Brewery)
 MATCH (br)-[:FROM]->(c:City)
 MATCH (c)-[:IN]->(st:State)
-MATCH (r:Review)-[:ABOUT]->(b)
+OPTIONAL MATCH (r:Review)-[:ABOUT]->(b)
 RETURN
     b.id AS id,
     b.name AS name,
@@ -27,10 +26,10 @@ RETURN
     s.name AS style,
     br.name AS brewery,
     c.name AS city,
-    TRIM(st.name) AS state,
+    st.name AS state,
     count(r) AS review_count,
     avg(r.rating) AS overall_rating
-ORDER BY id ASC
+ORDER BY review_count DESC, id ASC
 SKIP \$skip LIMIT \$limit
 CYPHER;
         $result = $this->client->run($query, [
@@ -61,11 +60,15 @@ CYPHER;
         $beer->style = $beerNode->get("style");
         $beer->ibu = $beerNode->get("ibu");
         $beer->abv = $beerNode->get("abv");
-        $beer->brewery = $beerNode->get("brewery");
-        $beer->brewery_city = $beerNode->get("city");
-        $beer->brewery_state = $beerNode->get("state");
         $beer->review_count = $beerNode->get("review_count");
         $beer->rating = $beerNode->get("overall_rating");
+
+        $brewery = new Brewery();
+        $brewery->name = $beerNode->get("brewery");
+        $brewery->city = $beerNode->get("city");
+        $brewery->state = $beerNode->get("state");
+
+        $beer->brewery = $brewery;
 
         return $beer;
     }

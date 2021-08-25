@@ -13,17 +13,17 @@
     <div class="p-4">
         <div class="flex mb-4">
             <div class="sm">
-                <h4 class="text-l font-bold text-blue-600">{{ $beer->name }}</h4>
-                <h5 class="text-sm">Brewed by <strong>{{ $beer->brewery }}</strong></h5>
-                <h6 class="text-sm">{{ $beer->brewery_city }} ({{ $beer->brewery_state }})</h6>
+                <h4 class="text-l font-bold text-yellow-500">{{ $beer->name }}</h4>
+                <h5 class="text-sm">Brewed by <strong>{{ $beer->brewery->name }}</strong></h5>
+                <h6 class="text-sm">{{ $beer->brewery->city }} ({{ $beer->brewery->state }})</h6>
             </div>
         </div>
         <div>
             <ul class="text-sm">
                 <li><strong>Style</strong>: {{ $beer->style }}</li>
                 <li><strong>Alcohol</strong>: {{ round($beer->abv * 100, 1) }}%</li>
-                <li><strong>IBU</strong>: {{ $beer->ibu }}</li>
-                <li><strong>Rating</strong>: {{ $beer->rating }}</li>
+                <li><strong>IBU</strong>: {{ $beer->ibu ?? '-' }}</li>
+                <li><strong>Rating</strong>: {{ round($beer->rating, 1) }}</li>
             </ul>
         </div>
     </div>

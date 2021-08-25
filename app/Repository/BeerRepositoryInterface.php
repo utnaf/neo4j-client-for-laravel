@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Collection\BeerCollection;
 use App\Models\Beer;
+use App\Models\User;
 
 interface BeerRepositoryInterface
 {

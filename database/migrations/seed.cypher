@@ -8,7 +8,7 @@ CALL apoc.load.csv("file:///breweries.csv") YIELD map
 MERGE (br:Brewery {id:map.id}) SET br.name = map.name
 MERGE (c:City {name:map.city})
 MERGE (br)-[:FROM]->(c)
-MERGE (s:State {name:map.state})
+MERGE (s:State {name: TRIM(map.state)})
 MERGE (c)-[:IN]->(s);
 
 CALL apoc.load.csv("file:///beers.csv") YIELD map
@@ -22,20 +22,36 @@ WITH be, map
 MATCH (br:Brewery {id: map.brewery_id})
 MERGE (be)-[:BREWED_BY]->(br);
 
-UNWIND RANGE(1, 50) AS _id
-MERGE (u:User {
+MATCH (be:Beer)
+WHERE be.ibu IS NULL
+DETACH DELETE be;
+
+UNWIND ["Lois", "Peter", "Meg", "Chris", "Stewie", "Brian"] as name
+CREATE (u:User {
     id: apoc.create.uuid(),
-    email:"user_" + _id + "@gmail.com",
-    name:"User " + _id,
+    email: toLower(name) + "@gmail.com",
+    name: name,
     password:"$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi"
 });
 
-UNWIND RANGE(1, 500000) AS _id
-MATCH (b:Beer {id: toInteger(ROUND(RAND()* 2410 + 1))})
-WITH b
-CREATE (r:Review {rating:ROUND(RAND()* 5 + 1, 1)})
-CREATE (r)-[:ABOUT]->(b)
-WITH r
-MATCH (u:User {name: "User " +  toInteger(ROUND(RAND()* 50 + 1))})
-WITH u, r
-CREATE (u)-[:WROTE]->(r);
+UNWIND ["Lois", "Peter", "Meg", "Chris", "Stewie", "Brian"] as name
+MATCH (u:User {name: name})
+WITH u, [1, 2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5] AS votes
+UNWIND RANGE(0, 20) AS _useless
+MATCH (b:Beer {id: toInteger(rand() * 100 + 1)})
+CREATE (r:Review {rating: apoc.coll.randomItem(votes)})
+CREATE (u)-[:WROTE]->(r)-[:ABOUT]->(b);
+
+MATCH (u:User)
+WITH u, [1, 2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5] AS votes, [
+    "Festie", "Humbucker Helles", "Grisette", "Abita Amber",
+    "Larry Imperial IPA", "Maggie's Leap", "Horny Monk",
+    "Rodeo Rye Pale Ale", "Monk's Blood", "Aviator Raspberry Blonde",
+    "Point Special", "Noche Dulce", "Vanilla Porter", "Night Cat"
+] AS common_beers
+UNWIND common_beers AS beer_name
+MATCH (b:Beer {name:  beer_name})
+CREATE (r:Review {rating: apoc.coll.randomItem(votes)})
+CREATE (u)-[:WROTE]->(r)-[:ABOUT]->(b)
+
+
