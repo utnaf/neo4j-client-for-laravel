@@ -42,16 +42,6 @@ CYPHER;
         }));
     }
 
-    public function getById(): Beer
-    {
-        // TODO: Implement getById() method.
-    }
-
-    public function search(): BeerCollection
-    {
-        // TODO: Implement search() method.
-    }
-
     private function nodeToBeer(CypherMap $beerNode): Beer
     {
         $beer = new Beer;

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BeerController;
+use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,7 +24,8 @@ Route::get('/dashboard', function () {
 })->middleware(['auth'])->name('dashboard');
 
 Route::resources([
-    'beers' => BeerController::class
+    'beers' => BeerController::class,
+    'reviews' => ReviewController::class
 ]);
 
 require __DIR__.'/auth.php';

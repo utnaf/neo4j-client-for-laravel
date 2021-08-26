@@ -13,7 +13,7 @@
     <div class="p-4">
         <div class="flex mb-4">
             <div class="sm">
-                <h4 class="text-l font-bold text-yellow-500">{{ $beer->name }}</h4>
+                <h4 class="text-lg font-bold text-yellow-500">{{ $beer->name }}</h4>
                 <h5 class="text-sm">Brewed by <strong>{{ $beer->brewery->name }}</strong></h5>
                 <h6 class="text-sm">{{ $beer->brewery->city }} ({{ $beer->brewery->state }})</h6>
             </div>

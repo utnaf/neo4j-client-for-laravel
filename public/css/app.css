@@ -32112,6 +32112,10 @@ select {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.text-shadow {
+  text-shadow: 1px 1px 0 #aaa;
+}
+
 @media (min-width: 640px) {
   .sm\:container {
     width: 100%;
@@ -63332,6 +63336,10 @@ select {
 
   .sm\:ease-in-out {
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .sm\:text-shadow {
+    text-shadow: 1px 1px 0 #aaa;
   }
 }
 
@@ -94556,6 +94564,10 @@ select {
   .md\:ease-in-out {
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   }
+
+  .md\:text-shadow {
+    text-shadow: 1px 1px 0 #aaa;
+  }
 }
 
 @media (min-width: 1024px) {
@@ -125778,6 +125790,10 @@ select {
 
   .lg\:ease-in-out {
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .lg\:text-shadow {
+    text-shadow: 1px 1px 0 #aaa;
   }
 }
 
@@ -157002,6 +157018,10 @@ select {
   .xl\:ease-in-out {
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   }
+
+  .xl\:text-shadow {
+    text-shadow: 1px 1px 0 #aaa;
+  }
 }
 
 @media (min-width: 1536px) {
@@ -188224,6 +188244,10 @@ select {
 
   .\32xl\:ease-in-out {
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .\32xl\:text-shadow {
+    text-shadow: 1px 1px 0 #aaa;
   }
 }
 
