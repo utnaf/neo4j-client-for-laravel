@@ -29,6 +29,22 @@ CYPHER;
         }));
     }
 
+    public function createReview(int $rating, string $userId, int $beerId): void
+    {
+        $query = <<<CYPHER
+MATCH (u:User {id: \$userId})
+MATCH (b:Beer {id: \$beerId})
+CREATE (r:Review {rating: \$rating})
+CREATE (u)-[:WROTE]->(r)-[:ABOUT]->(b);
+CYPHER;
+
+        $this->client->run($query, [
+            'rating' => $rating,
+            'userId' => $userId,
+            'beerId' => $beerId
+        ]);
+    }
+
     private function nodeToReview(CypherMap $reviewNode): Review
     {
         $review = new Review;

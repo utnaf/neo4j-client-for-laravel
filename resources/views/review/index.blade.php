@@ -7,7 +7,7 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            @if(empty($reviews))
+            @if($reviews->count() === 0)
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                     <h3>You haven't wrote any review yet.</h3>
                 </div>

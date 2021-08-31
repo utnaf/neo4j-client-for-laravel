@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Repository\BeerRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -28,9 +29,11 @@ class BeerController extends Controller
      */
     public function index(Request $request)
     {
+        assert($request->user() instanceof User, "User must be logged in.");
         $beers = $this->beerRepository->getAll(
             self::PER_PAGE * $request->get('page', 0),
-            self::PER_PAGE
+            self::PER_PAGE,
+            $request->user()->id
         );
 
         return view("beer.index", [

@@ -4,13 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Repository\ReviewRepositoryInterface;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
 class ReviewController extends Controller
 {
-    public const PER_PAGE = 9;
-
     private ReviewRepositoryInterface $reviewRepository;
 
     /**
@@ -35,5 +35,25 @@ class ReviewController extends Controller
         return view("review.index", [
             'reviews' => $reviews
         ]);
+    }
+
+    /**
+     * @param Request $request
+     * @return  RedirectResponse
+     */
+    public function store(Request $request):  RedirectResponse
+    {
+        assert($request->user() instanceof User, "User must be logged in.");
+        assert(
+            $request->has('rating') && $request->has('beer_id'),
+            'rating and beer_id fields are mandatory.'
+        );
+        $this->reviewRepository->createReview(
+            $request->get('rating', 1),
+            $request->user()->id,
+            (int) $request->get('beer_id')
+        );
+
+        return Redirect::route('beers.index');
     }
 }

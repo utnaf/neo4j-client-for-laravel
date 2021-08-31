@@ -6,5 +6,5 @@ use App\Collection\BeerCollection;
 
 interface BeerRepositoryInterface
 {
-    public function getAll(int $skip, int $limit): BeerCollection;
+    public function getAll(int $skip, int $limit, string $userId): BeerCollection;
 }
