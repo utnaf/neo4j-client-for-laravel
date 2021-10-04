@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ReviewAddedEvent;
 use App\Models\User;
 use App\Repository\ReviewRepositoryInterface;
 use Illuminate\Http\RedirectResponse;
@@ -54,6 +55,8 @@ class ReviewController extends Controller
             (int) $request->get('beer_id')
         );
 
-        return Redirect::route('beers.index');
+        ReviewAddedEvent::dispatch($request->user());
+
+        return Redirect::route('dashboard.index');
     }
 }

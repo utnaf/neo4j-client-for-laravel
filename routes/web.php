@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BeerController;
+use App\Http\Controllers\RecommendationController;
 use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,12 +20,9 @@ Route::get('/', function () {
     return redirect('dashboard');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
-
 Route::group(['middleware' => 'auth'], function() {
     Route::resources([
+        'dashboard' => RecommendationController::class,
         'beers' => BeerController::class,
         'reviews' => ReviewController::class
     ]);

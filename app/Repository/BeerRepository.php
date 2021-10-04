@@ -13,8 +13,7 @@ class BeerRepository extends AbstractRepository implements BeerRepositoryInterfa
     public function getAll(int $skip, int $limit, string $userId): BeerCollection
     {
         $query = <<<CYPHER
-MATCH (b:Beer)-[:STYLE]->(s:Style)
-MATCH (b)-[:BREWED_BY]->(br:Brewery)
+MATCH (b:Beer)-[:BREWED_BY]->(br:Brewery)
 MATCH (br)-[:FROM]->(c:City)
 MATCH (c)-[:IN]->(st:State)
 OPTIONAL MATCH (u:User { id: \$userId})-[:WROTE]->(:Review)-[:ABOUT]->(b)
@@ -25,7 +24,7 @@ RETURN
     b.name AS name,
     b.abv AS abv,
     b.ibu AS ibu,
-    s.name AS style,
+    b.style AS style,
     br.name AS brewery,
     c.name AS city,
     st.name AS state,

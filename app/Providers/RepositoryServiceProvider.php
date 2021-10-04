@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Repository\BeerRepository;
 use App\Repository\BeerRepositoryInterface;
+use App\Repository\RecommendationRepository;
+use App\Repository\RecommendationRepositoryInterface;
 use App\Repository\ReviewRepository;
 use App\Repository\ReviewRepositoryInterface;
 use App\Repository\UserRepository;
@@ -22,6 +24,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
         $this->app->bind(BeerRepositoryInterface::class, BeerRepository::class);
         $this->app->bind(ReviewRepositoryInterface::class, ReviewRepository::class);
+        $this->app->bind(RecommendationRepositoryInterface::class, RecommendationRepository::class);
     }
 
     /**

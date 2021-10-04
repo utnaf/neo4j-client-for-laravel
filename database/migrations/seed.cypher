@@ -2,7 +2,6 @@ CREATE CONSTRAINT user_id_unique IF NOT exists ON (u:User) ASSERT u.id IS UNIQUE
 CREATE CONSTRAINT user_email_unique IF NOT exists ON (u:User) ASSERT u.email IS UNIQUE;
 CREATE CONSTRAINT brewery_id_unique IF NOT exists ON (b:Brewery) ASSERT b.id IS UNIQUE;
 CREATE CONSTRAINT beer_id_unique IF NOT exists ON (b:Beer) ASSERT b.id IS UNIQUE;
-CREATE CONSTRAINT style_unique IF NOT exists ON (s:Style) ASSERT s.name IS UNIQUE;
 
 CALL apoc.load.csv("file:///breweries.csv") YIELD map
 MERGE (br:Brewery {id:map.id}) SET br.name = map.name
@@ -15,9 +14,8 @@ CALL apoc.load.csv("file:///beers.csv") YIELD map
 MERGE (be:Beer {id:toInteger(map.id)}) SET
 be.ibu = ROUND(toFloat(map.ibu), 2),
 be.abv = ROUND(toFloat(map.abv), 3),
-be.name = map.name
-MERGE (s:Style {name:map.style})
-MERGE (be)-[:STYLE]->(s)
+be.name = map.name,
+be.style = map.style
 WITH be, map
 MATCH (br:Brewery {id: map.brewery_id})
 MERGE (be)-[:BREWED_BY]->(br);
@@ -52,6 +50,18 @@ WITH u, [1, 2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5,
 UNWIND common_beers AS beer_name
 MATCH (b:Beer {name:  beer_name})
 CREATE (r:Review {rating: apoc.coll.randomItem(votes)})
-CREATE (u)-[:WROTE]->(r)-[:ABOUT]->(b)
+CREATE (u)-[:WROTE]->(r)-[:ABOUT]->(b);
+
+MATCH (b:Beer) WITH b ORDER BY id(b)
+MATCH (u:User) WHERE size((u)-[:WROTE]->(:Review)) > 2
+WITH b, u OPTIONAL MATCH (u)-[:WROTE]->(review:Review)-[:ABOUT]->(b)
+WITH b, u, CASE review IS NULL WHEN true THEN 0 ELSE review.rating END AS rating
+ORDER BY ID(u), ID(b)
+WITH {item: ID(u), weights: COLLECT(rating)} AS userData
+WITH COLLECT(userData) AS data
+CALL gds.alpha.similarity.pearson.stream({data: data, topK: 3, similarityCutoff: 0.3})
+YIELD item1, item2, count1, count2, similarity
+WITH gds.util.asNode(item1) AS user1, gds.util.asNode(item2) AS user2, similarity
+MERGE (user1)-[r:SIMILAR_USER]->(user2) SET r.userSimilarity = similarity;
 
 

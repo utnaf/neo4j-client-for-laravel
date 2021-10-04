@@ -37,10 +37,10 @@ make neo4j-seed
 
 ```
 MATCH (b:Beer)
-WHERE SIZE((b)<-[:ABOUT]-(:Review)) > 2
+WHERE SIZE((b)<-[:ABOUT]-(:Review)) > 5
 MATCH (s:Style)<-[:STYLE]-(b)<-[:ABOUT]-(r:Review)
 WITH b AS beer, s AS style, AVG(r.rating) AS average, STDEV(r.rating) AS stddev
-WHERE stddev < 1 AND average > 3
+WHERE stddev < 0.6 AND average > 3
 WITH beer, style.name AS style, stddev, average,
 SIZE((beer)<-[:ABOUT]-(:Review)) AS number
 ORDER BY average DESC, stddev DESC, number DESC

@@ -13,11 +13,11 @@ class ReviewRepository extends AbstractRepository implements ReviewRepositoryInt
     {
         $query = <<<CYPHER
 MATCH (u:User {id: \$userId})
-MATCH (u)-[:WROTE]->(r:Review)-[:ABOUT]->(b:Beer)-[:STYLE]->(s:Style)
+MATCH (u)-[:WROTE]->(r:Review)-[:ABOUT]->(b:Beer)
 RETURN
     r.rating AS rating,
     b.name AS beerName,
-    s.name AS beerStyle
+    b.style AS beerStyle
 ORDER BY rating DESC
 CYPHER;
         $result = $this->client->run($query, [

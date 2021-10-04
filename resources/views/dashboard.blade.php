@@ -6,11 +6,17 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 bg-white border-b border-gray-200">
-                    You're logged in!
-                </div>
+        <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white border-b-2 border-gray-300 rounded-md p-3">
+                <h2 class="text-lg font-bold mb-2">Recommended Beers</h2>
+                <ul>
+                    @foreach($recommendedBeers as $recommendation)
+                        <li class="mb-2">
+                            <x-recommendation :recommended-beer=$recommendation></x-recommendation>
+                        </li>
+                    @endforeach
+                </ul>
+
             </div>
         </div>
     </div>

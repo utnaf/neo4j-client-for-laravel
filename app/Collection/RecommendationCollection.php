@@ -4,4 +4,4 @@ namespace App\Collection;
 
 use Illuminate\Support\Collection;
 
-class BeerCollection extends Collection { }
+class RecommendationCollection extends Collection { }
