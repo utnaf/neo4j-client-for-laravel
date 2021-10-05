@@ -24,12 +24,13 @@ class RecommendationController extends Controller
         assert($request->user() instanceof User, "User must be logged in.");
 
         $reviewCount = $this->reviewRepository->getByUserId($request->user()->id)->count();
-        $recommendations = null;
-        if ($reviewCount === 0) {
-            $recommendations = $this->recommendationRepository->coldStartRecommendation();
-        }
-        else {
+
+        if ($reviewCount > 0) {
             $recommendations = $this->recommendationRepository->getRecommendedBeers($request->user());
+        }
+
+        if (count($recommendations) === 0) {
+            $recommendations = $this->recommendationRepository->coldStartRecommendation();
         }
 
         return view('dashboard', [

@@ -18,7 +18,7 @@ class RecommendationRepository extends AbstractRepository implements Recommendat
 MATCH (b:Beer)<-[:ABOUT]-(r:Review)
 WITH b AS beer, AVG(r.rating) AS average, STDEV(r.rating) AS stddev, COUNT(r) AS reviewCount
 WHERE stddev < 0.2 AND average > 3
-RETURN beer.name AS beerName, beer.id AS beerId, b.style AS style, ['coldStart'] AS reason
+RETURN beer.name AS beerName, beer.id AS beerId, beer.style AS style, ['coldStart'] AS reason
 ORDER BY reviewCount DESC, average DESC, stddev DESC
 LIMIT \$recommendationLimit
 CYPHER;
@@ -35,7 +35,7 @@ CYPHER;
     public function getRecommendedBeers(User $user): RecommendationCollection
     {
         $query = <<<CYPHER
-MATCH (u:User {id: \$userId})<-[r:RECCOMENDED_TO]-(beer:Beer)
+MATCH (u:User {id: \$userId})<-[r:RECOMMENDED_TO]-(beer:Beer)
 WHERE NOT((u)-[:WROTE]->(:Review)-[:ABOUT]->(beer))
 RETURN beer.name AS beerName, beer.id AS beerId, beer.style AS style, r.reason AS reason
 ORDER BY r.created_at DESC
@@ -75,7 +75,7 @@ WHERE NOT((u)-[:WROTE]->(:Review)-[:ABOUT]->(b))
 WITH b, COUNT(b) AS beers
 WITH b ORDER BY beers DESC LIMIT 3
 MATCH (u:User {id: \$userId})
-CREATE (b)-[r:RECCOMENDED_TO]->(u)
+CREATE (b)-[r:RECOMMENDED_TO]->(u)
 SET r.created_at = timestamp(), r.reason=['userSimilarity']
 RETURN b
 CYPHER;

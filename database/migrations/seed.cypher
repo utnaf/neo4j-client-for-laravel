@@ -24,6 +24,24 @@ MATCH (be:Beer)
 WHERE be.ibu IS NULL
 DETACH DELETE be;
 
+MATCH (be:Beer)
+WITH be
+ORDER BY be.id ASC
+SKIP 30
+DETACH DELETE be;
+
+MATCH (br:Brewery)
+WHERE size((br)<-[:BREWED_BY]-())=0
+DETACH DELETE (br);
+
+MATCH (c:City)
+WHERE size((c)<-[:FROM]-())=0
+DETACH DELETE (c);
+
+MATCH (s:State)
+WHERE size((s)<-[:IN]-())=0
+DETACH DELETE (s);
+
 UNWIND ["Lois", "Peter", "Meg", "Chris", "Stewie", "Brian"] as name
 CREATE (u:User {
     id: apoc.create.uuid(),
@@ -35,22 +53,10 @@ CREATE (u:User {
 UNWIND ["Lois", "Peter", "Meg", "Chris", "Stewie", "Brian"] as name
 MATCH (u:User {name: name})
 WITH u, [1, 2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5] AS votes
-UNWIND RANGE(0, 20) AS _useless
-MATCH (b:Beer {id: toInteger(rand() * 100 + 1)})
-CREATE (r:Review {rating: apoc.coll.randomItem(votes)})
-CREATE (u)-[:WROTE]->(r)-[:ABOUT]->(b);
-
-MATCH (u:User)
-WITH u, [1, 2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5] AS votes, [
-    "Festie", "Humbucker Helles", "Grisette", "Abita Amber",
-    "Larry Imperial IPA", "Maggie's Leap", "Horny Monk",
-    "Rodeo Rye Pale Ale", "Monk's Blood", "Aviator Raspberry Blonde",
-    "Point Special", "Noche Dulce", "Vanilla Porter", "Night Cat"
-] AS common_beers
-UNWIND common_beers AS beer_name
-MATCH (b:Beer {name:  beer_name})
-CREATE (r:Review {rating: apoc.coll.randomItem(votes)})
-CREATE (u)-[:WROTE]->(r)-[:ABOUT]->(b);
+UNWIND RANGE(0, 5) AS _useless
+MATCH (b:Beer {id: toInteger(rand() * 25 + 1)})
+MERGE (u)-[:WROTE]->(r:Review)-[:ABOUT]->(b)
+SET r.rating = apoc.coll.randomItem(votes);
 
 MATCH (b:Beer) WITH b ORDER BY id(b)
 MATCH (u:User) WHERE size((u)-[:WROTE]->(:Review)) > 2
